@@ -11,7 +11,7 @@ spring:
       username: evaluser
       password: ENC(maem9OcXKccpcw167cStI+CtabMNoxJwlRZnx0OmOumGY1DLKNNqsXMn0XeVcnFs)
 mybatis:
-  type-aliases-package: live.bokurano.evalserver.model
+  type-aliases-package: live.bokurano.evalserver.model.mysql
 jwt:
   secret: ENC(a/7tcgO+nMg9cFp0Vi4a2uarqfvstuD1AyN4D9uYM/5WN4BxUN/OWOOkDTUpTjIgkVwcZOOKVGvuA1GUAQqeWg==)
   expire: 604800000

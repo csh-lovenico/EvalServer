@@ -1,4 +1,4 @@
-package live.bokurano.evalserver.model;
+package live.bokurano.evalserver.model.mysql;
 
 import lombok.Data;
 
@@ -6,5 +6,6 @@ import lombok.Data;
 public class Course {
 	private String courseId;
 	private String courseName;
+	private int courseSemester;
 	private Teacher courseTeacher;
 }

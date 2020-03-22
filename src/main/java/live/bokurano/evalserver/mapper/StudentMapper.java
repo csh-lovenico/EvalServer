@@ -1,16 +1,12 @@
 package live.bokurano.evalserver.mapper;
 
-import live.bokurano.evalserver.model.Student;
+import live.bokurano.evalserver.model.mysql.Course;
+import live.bokurano.evalserver.model.mysql.Student;
 import org.apache.ibatis.annotations.*;
 
-public interface StudentMapper {
+import java.util.List;
 
-	@Select("SELECT * FROM student WHERE student_id=#{studentId} AND student_password=#{studentPassword}")
-	@Results({
-			@Result(property = "studentId", column = "student_id"),
-			@Result(property = "studentName", column = "student_name")
-	})
-	Student studentLogin(@Param("studentId") String studentId, @Param("studentPassword") String studentPassword);
+public interface StudentMapper {
 
 	@Select("SELECT * FROM student WHERE student_id=#{studentId}")
 	@Results({
@@ -19,4 +15,13 @@ public interface StudentMapper {
 			@Result(property = "studentName", column = "student_name")
 	})
 	Student loadStudent(@Param("studentId") String studentId);
+
+	@Select("SELECT * FROM enrollment LEFT JOIN course ON enrollment.enroll_course = course.course_id LEFT JOIN teacher t on course.course_teacher = t.teacher_id WHERE enroll_student = #{studentId} AND enroll_year = #{enrollYear} AND course_semester = #{semester}")
+	@Results({
+			@Result(property = "courseId", column = "course_id"),
+			@Result(property = "courseName", column = "course_name"),
+			@Result(property = "courseSemester", column = "course_semester"),
+			@Result(property = "courseTeacher", column = "course_teacher", one = @One(select = "live.bokurano.evalserver.mapper.TeacherMapper.findTeacherByIdNoPassword"))
+	})
+	List<Course> findEnrolledCourse(@Param("studentId") String studentId, @Param("enrollYear") int enrollYear, @Param("semester") int semester);
 }

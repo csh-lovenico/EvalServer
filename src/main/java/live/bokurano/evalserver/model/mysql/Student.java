@@ -1,4 +1,4 @@
-package live.bokurano.evalserver.model;
+package live.bokurano.evalserver.model.mysql;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package live.bokurano.evalserver.mapper;
 
-import live.bokurano.evalserver.model.Admin;
+import live.bokurano.evalserver.model.mysql.Admin;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
