@@ -1,11 +1,17 @@
 package live.bokurano.evalserver.service;
 
+import live.bokurano.evalserver.common.ServerResult;
 import live.bokurano.evalserver.model.mongo.Evaluation;
-
-import java.util.List;
+import live.bokurano.evalserver.model.mongo.SingleEvaluation;
 
 public interface EvaluationService {
-	List<Evaluation> getCourseEvaluations(String courseId);
+	ServerResult getCourseEvaluations(String courseId);
 
-	Evaluation getSpecificEvaluation(String courseId, int year);
+	ServerResult getSpecificEvaluation(String courseId, int year);
+
+	ServerResult saveSingleEvaluation(SingleEvaluation singleEvaluation);
+
+	ServerResult saveEvaluation(Evaluation evaluation);
+
+	ServerResult getCourseInfo(String courseId);
 }
