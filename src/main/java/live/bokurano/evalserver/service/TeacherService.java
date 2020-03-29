@@ -1,10 +1,11 @@
 package live.bokurano.evalserver.service;
 
-import live.bokurano.evalserver.model.mysql.Course;
-
-import java.util.List;
+import live.bokurano.evalserver.common.ServerResult;
 
 public interface TeacherService {
-	List<Course> getTeacherCourse(String teacherId);
-	List<String> getTeacherCourseId(String teacherId);
+	ServerResult getTeacherCourse(String teacherId);
+
+	ServerResult getTeacherCourseId(String teacherId);
+
+	ServerResult getEvaluationOfMyCourse(String teacherId);
 }
