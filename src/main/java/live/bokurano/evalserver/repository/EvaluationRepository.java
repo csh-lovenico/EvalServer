@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface EvaluationRepository extends MongoRepository<Evaluation, String> {
 	List<Evaluation> findAllByCourseId(String courseId);
 
+	List<Evaluation> findAllByCourseId(List<String> courseIds);
+
 	Optional<Evaluation> findByCourseIdAndYear(String courseId, int year);
 }
