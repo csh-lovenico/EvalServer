@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Collectors;
+
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
@@ -38,8 +40,8 @@ public class JwtAuthenticationController {
 				.loadUserByUsername(authenticationRequest.getUsername());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
-
-		return ResponseEntity.ok(new JwtResponse(token));
+		final String userRole = userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0).getAuthority();
+		return ResponseEntity.ok(new JwtResponse(token, userRole, userDetails.getUsername()));
 	}
 
 	private void authenticate(String username, String password) throws Exception {
