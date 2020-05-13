@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface SingleEvaluationRepository extends MongoRepository<SingleEvaluation, String> {
-	List<SingleEvaluation> findAllByYear(int year);
+	List<SingleEvaluation> findAllByCourseYearAndCourseSemester(int year,int semester);
 
-	List<SingleEvaluation> findAllByStudentId(String studentId);
+	List<SingleEvaluation> findAllByCurrentStudentId(String studentId);
 
-	List<SingleEvaluation> findAllByCourseIdAndStudentId(List<String> courseId, String studentId);
+	List<SingleEvaluation> findAllByCourseIdInAndCurrentStudentId(List<String> courseId, String studentId);
 }
