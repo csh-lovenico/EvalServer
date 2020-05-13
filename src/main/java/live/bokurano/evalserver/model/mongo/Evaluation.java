@@ -12,11 +12,12 @@ public class Evaluation {
 	@Id
 	private String id;
 	private String courseId;
-	private String studentId;
-	int year;
-	private double total;
-	private RateDetails rateDetails;
+	private String courseName;
+	private String courseTeacher;
+	private String courseTeacherId;
+	private int courseSemester;
+	private int courseYear;
+	private double average;
 	private int studentNum;
-	private int likes;
-	private List<Comment> comments;
+	private List<String> comments;
 }
