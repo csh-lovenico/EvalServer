@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -74,7 +78,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public ServerResult getSpecificEvaluation(String courseId, int year) {
 		ServerResult result = new ServerResult();
 		try {
-			Evaluation evaluation = evaluationRepository.findByCourseIdAndYear(courseId, year).orElse(null);
+			Evaluation evaluation = evaluationRepository.findByCourseIdAndCourseYear(courseId, year).orElse(null);
 			result.setResult(evaluation);
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -97,6 +101,51 @@ public class EvaluationServiceImpl implements EvaluationService {
 			log.error(e.getMessage(), e);
 			result.setMessage(e.getMessage());
 		}
+		return null;
+	}
+
+	@Override
+	public ServerResult generateStats() {
+		List<SingleEvaluation> singleEvaluationList = singleEvaluationRepository.
+				findAllByCourseYearAndCourseSemester(2019, 1);
+//				findAllByCourseYearAndCourseSemester((Integer) GlobalProps.get("currentYear"),
+//						(Integer) GlobalProps.get("currentSemester"));
+		Map<String, List<SingleEvaluation>> evaluationGroups = new ConcurrentHashMap<>();
+		List<Evaluation> evaluationList = new CopyOnWriteArrayList<>();
+		singleEvaluationList.parallelStream().forEach(it -> {
+			if (evaluationGroups.get(it.getCourseId()) == null) {
+				List<SingleEvaluation> evaluations = new CopyOnWriteArrayList<>();
+				evaluations.add(it);
+				evaluationGroups.put(it.getCourseId(), evaluations);
+			} else {
+				evaluationGroups.get(it.getCourseId()).add(it);
+			}
+		});
+		log.info(evaluationGroups.toString());
+		evaluationGroups.forEach((key, value) -> {
+			AtomicInteger totalScore = new AtomicInteger();
+			AtomicInteger totalNum = new AtomicInteger();
+			List<String> comments = new CopyOnWriteArrayList<>();
+			value.parallelStream().forEach(it -> {
+				totalNum.getAndIncrement();
+				totalScore.addAndGet(it.getRate());
+				comments.add(it.getComment());
+			});
+		SingleEvaluation firstElement = value.get(0);
+		Evaluation evaluation = new Evaluation();
+		evaluation.setAverage((double)totalScore.get()/totalNum.get());
+		evaluation.setCourseId(firstElement.getCourseId());
+		evaluation.setComments(comments);
+		evaluation.setCourseTeacherId(firstElement.getCourseTeacherId());
+		evaluation.setCourseSemester(firstElement.getCourseSemester());
+		evaluation.setCourseYear(firstElement.getCourseYear());
+		evaluation.setStudentNum(totalNum.get());
+		evaluation.setCourseName(firstElement.getCourseName());
+		evaluation.setCourseTeacher(firstElement.getCourseTeacher());
+		evaluationList.add(evaluation);
+		});
+		log.info(evaluationList.toString());
+		evaluationRepository.saveAll(evaluationList);
 		return null;
 	}
 }

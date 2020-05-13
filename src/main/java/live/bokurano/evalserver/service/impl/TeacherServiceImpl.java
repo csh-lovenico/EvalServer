@@ -57,8 +57,9 @@ public class TeacherServiceImpl implements TeacherService {
 	public ServerResult getEvaluationOfMyCourse(String teacherId) {
 		ServerResult result = new ServerResult();
 		try {
-			List<String> courseIds = teacherMapper.findTeacherCourse(teacherId).stream().map(Course::getCourseId).collect(Collectors.toList());
-			List<Evaluation> evaluations = evaluationRepository.findAllByCourseId(courseIds);
+//			List<String> courseIds = teacherMapper.findTeacherCourse(teacherId).stream().map(Course::getCourseId).collect(Collectors.toList());
+//			List<Evaluation> evaluations = evaluationRepository.findAllByCourseId(courseIds);
+			List<Evaluation> evaluations = evaluationRepository.findAllByCourseTeacherId(teacherId);
 			result.setSuccess(true);
 			result.setResult(evaluations);
 		} catch (Exception e) {
