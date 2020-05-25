@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @Document
 public class SingleEvaluation {
@@ -16,6 +18,6 @@ public class SingleEvaluation {
 	private String courseTeacherId;
 	private int courseSemester;
 	private int courseYear;
-	private int rate;
+	private List<Integer> rate;
 	private String comment;
 }
