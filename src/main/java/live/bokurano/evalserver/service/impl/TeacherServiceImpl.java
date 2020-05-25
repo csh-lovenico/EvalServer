@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TeacherServiceImpl implements TeacherService {
 
+	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 	@Autowired
 	private TeacherMapper teacherMapper;
 
@@ -57,8 +58,6 @@ public class TeacherServiceImpl implements TeacherService {
 	public ServerResult getEvaluationOfMyCourse(String teacherId) {
 		ServerResult result = new ServerResult();
 		try {
-//			List<String> courseIds = teacherMapper.findTeacherCourse(teacherId).stream().map(Course::getCourseId).collect(Collectors.toList());
-//			List<Evaluation> evaluations = evaluationRepository.findAllByCourseId(courseIds);
 			List<Evaluation> evaluations = evaluationRepository.findAllByCourseTeacherId(teacherId);
 			result.setSuccess(true);
 			result.setResult(evaluations);
