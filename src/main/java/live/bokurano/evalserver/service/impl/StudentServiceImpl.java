@@ -1,5 +1,6 @@
 package live.bokurano.evalserver.service.impl;
 
+import live.bokurano.evalserver.transfer.OutputCourse;
 import live.bokurano.evalserver.common.ServerResult;
 import live.bokurano.evalserver.mapper.StudentMapper;
 import live.bokurano.evalserver.model.mongo.SingleEvaluation;
@@ -22,20 +23,32 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	private SingleEvaluationRepository singleEvaluationRepository;
 
+	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 	@Autowired
 	private StudentMapper studentMapper;
 
 	@Override
 	public ServerResult getUnevaluatedCourse(String studentId) {
+		ServerResult result = new ServerResult();
+		if (GlobalProps.get("enabled") == null) {
+			result.setSuccess(true);
+			result.setResult(new ArrayList<>());
+			return result;
+		}
 
+		if (!(boolean) GlobalProps.get("enabled")) {
+			result.setSuccess(true);
+			result.setResult(new ArrayList<>());
+			return result;
+		}
 		int currentYear = (Integer) GlobalProps.get("currentYear");
 		int currentSemester = (Integer) GlobalProps.get("currentSemester");
-		ServerResult result = new ServerResult();
 		try {
 			List<Course> courses = studentMapper.findEnrolledCourse(studentId, currentYear, currentSemester);
-			if (singleEvaluationRepository.findAllByCourseIdAndStudentId(courses.stream().map(Course::getCourseId).collect(Collectors.toList()), studentId).isEmpty()) {
+			if (singleEvaluationRepository.findAllByCourseIdInAndCurrentStudentId(courses.stream().map(Course::getCourseId).collect(Collectors.toList()), studentId).isEmpty()) {
+				List<OutputCourse> outputCourseList = courses.stream().map(it -> new OutputCourse(it.getCourseId(), it.getCourseName(), it.getCourseTeacher().getTeacherName(), it.getCourseTeacher().getTeacherId(), currentYear, it.getCourseSemester())).collect(Collectors.toList());
 				result.setSuccess(true);
-				result.setResult(courses);
+				result.setResult(outputCourseList);
 			} else {
 				result.setSuccess(true);
 				result.setResult(new ArrayList<>());
@@ -53,7 +66,7 @@ public class StudentServiceImpl implements StudentService {
 	public ServerResult getEvaluationHistory(String studentId) {
 		ServerResult result = new ServerResult();
 		try {
-			List<SingleEvaluation> evaluationList = singleEvaluationRepository.findAllByStudentId(studentId);
+			List<SingleEvaluation> evaluationList = singleEvaluationRepository.findAllByCurrentStudentId(studentId);
 			result.setResult(evaluationList);
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -65,14 +78,14 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public ServerResult saveEvaluation(SingleEvaluation evaluation) {
+	public ServerResult saveEvaluation(List<SingleEvaluation> evaluations) {
 		ServerResult result = new ServerResult();
 		try {
-			singleEvaluationRepository.save(evaluation);
+			singleEvaluationRepository.saveAll(evaluations);
 			result.setSuccess(true);
-		} catch (Exception e){
+		} catch (Exception e) {
 			result.setSuccess(false);
-			log.error(e.getMessage(),e);
+			log.error(e.getMessage(), e);
 			result.setMessage(e.getMessage());
 		}
 		return result;

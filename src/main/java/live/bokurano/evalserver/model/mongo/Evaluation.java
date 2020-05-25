@@ -11,12 +11,13 @@ import java.util.List;
 public class Evaluation {
 	@Id
 	private String id;
-	private String courseId;
-	private String studentId;
-	int year;
-	private double total;
-	private RateDetails rateDetails;
+	private final String courseId;
+	private final String courseName;
+	private final String courseTeacher;
+	private final String courseTeacherId;
+	private final int courseSemester;
+	private final int courseYear;
+	private List<Double> average;
 	private int studentNum;
-	private int likes;
-	private List<Comment> comments;
+	private List<String> comments;
 }

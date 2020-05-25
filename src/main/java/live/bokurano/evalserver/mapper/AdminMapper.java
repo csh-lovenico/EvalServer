@@ -11,7 +11,7 @@ public interface AdminMapper {
 	@Select("SELECT * FROM admin WHERE admin_username=#{adminUsername}")
 	@Results({
 			@Result(property = "adminUsername", column = "admin_username"),
-			@Result(property = "adminPassword", column = "adminPassword")
+			@Result(property = "adminPassword", column = "admin_password")
 	})
 	Admin loadAdmin(@Param("adminUsername") String adminUsername);
 }

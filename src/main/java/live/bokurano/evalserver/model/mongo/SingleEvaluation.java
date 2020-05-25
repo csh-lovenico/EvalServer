@@ -4,15 +4,20 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @Document
 public class SingleEvaluation {
 	@Id
 	private String id;
-	private String studentId;
+	private String currentStudentId;
 	private String courseId;
-	private int year;
-	private int rate;
-	private boolean like;
+	private String courseName;
+	private String courseTeacher;
+	private String courseTeacherId;
+	private int courseSemester;
+	private int courseYear;
+	private List<Integer> rate;
 	private String comment;
 }

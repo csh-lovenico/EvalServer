@@ -44,6 +44,13 @@ public class JwtAuthenticationController {
 		return ResponseEntity.ok(new JwtResponse(token, userRole, userDetails.getUsername()));
 	}
 
+	@PostMapping("/admin/auth")
+	public ResponseEntity<?> adminAuth(@RequestBody JwtRequest jwtRequest) throws Exception{
+		authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
+
+		return null;
+	}
+
 	private void authenticate(String username, String password) throws Exception {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

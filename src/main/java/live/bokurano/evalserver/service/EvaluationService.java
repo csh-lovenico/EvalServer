@@ -14,4 +14,6 @@ public interface EvaluationService {
 	ServerResult saveEvaluation(Evaluation evaluation);
 
 	ServerResult getCourseInfo(String courseId);
+
+	ServerResult generateStats();
 }

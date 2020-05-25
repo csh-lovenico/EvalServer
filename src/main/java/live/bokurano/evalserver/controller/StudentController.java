@@ -4,12 +4,17 @@ import live.bokurano.evalserver.common.JsonResult;
 import live.bokurano.evalserver.common.ServerResult;
 import live.bokurano.evalserver.model.mongo.SingleEvaluation;
 import live.bokurano.evalserver.service.StudentService;
+import live.bokurano.evalserver.util.GlobalProps;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@Slf4j
 @PreAuthorize("hasAuthority('student')")
 public class StudentController {
 	@Autowired
@@ -30,9 +35,12 @@ public class StudentController {
 	}
 
 	@PostMapping("/api/student/postEvaluations")
-	public JsonResult postEvaluations(@RequestBody SingleEvaluation singleEvaluation) {
+	public JsonResult postEvaluations(@RequestBody List<SingleEvaluation> singleEvaluations) {
+		if (!(boolean) GlobalProps.get("enabled")) {
+			throw new IllegalStateException("系统已关闭");
+		}
 		JsonResult result = new JsonResult();
-		ServerResult serverResult = studentService.saveEvaluation(singleEvaluation);
+		ServerResult serverResult = studentService.saveEvaluation(singleEvaluations);
 		if (serverResult.isSuccess()) {
 			result.setStatus(HttpStatus.OK.value());
 		} else {

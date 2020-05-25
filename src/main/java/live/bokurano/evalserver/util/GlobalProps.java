@@ -3,8 +3,8 @@ package live.bokurano.evalserver.util;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GlobalProps {
-	private static Map<String, Object> props = new ConcurrentHashMap<>();
+public final class GlobalProps {
+	private static final Map<String, Object> props = new ConcurrentHashMap<>();
 
 	public static void put(String key, Object value) {
 		props.put(key, value);
