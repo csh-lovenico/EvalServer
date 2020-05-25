@@ -4,6 +4,7 @@ import live.bokurano.evalserver.common.JsonResult;
 import live.bokurano.evalserver.common.ServerResult;
 import live.bokurano.evalserver.model.mongo.SingleEvaluation;
 import live.bokurano.evalserver.service.StudentService;
+import live.bokurano.evalserver.util.GlobalProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,9 @@ public class StudentController {
 
 	@PostMapping("/api/student/postEvaluations")
 	public JsonResult postEvaluations(@RequestBody List<SingleEvaluation> singleEvaluations) {
+		if (!(boolean) GlobalProps.get("enabled")) {
+			throw new IllegalStateException("系统已关闭");
+		}
 		JsonResult result = new JsonResult();
 		ServerResult serverResult = studentService.saveEvaluation(singleEvaluations);
 		if (serverResult.isSuccess()) {

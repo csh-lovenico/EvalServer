@@ -23,16 +23,26 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	private SingleEvaluationRepository singleEvaluationRepository;
 
+	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 	@Autowired
 	private StudentMapper studentMapper;
 
 	@Override
 	public ServerResult getUnevaluatedCourse(String studentId) {
-		GlobalProps.put("currentYear", 2019);
-		GlobalProps.put("currentSemester", 1);
+		ServerResult result = new ServerResult();
+		if (GlobalProps.get("enabled") == null) {
+			result.setSuccess(true);
+			result.setResult(new ArrayList<>());
+			return result;
+		}
+
+		if (!(boolean) GlobalProps.get("enabled")) {
+			result.setSuccess(true);
+			result.setResult(new ArrayList<>());
+			return result;
+		}
 		int currentYear = (Integer) GlobalProps.get("currentYear");
 		int currentSemester = (Integer) GlobalProps.get("currentSemester");
-		ServerResult result = new ServerResult();
 		try {
 			List<Course> courses = studentMapper.findEnrolledCourse(studentId, currentYear, currentSemester);
 			if (singleEvaluationRepository.findAllByCourseIdInAndCurrentStudentId(courses.stream().map(Course::getCourseId).collect(Collectors.toList()), studentId).isEmpty()) {
