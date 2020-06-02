@@ -144,11 +144,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 			Double[] resultArray = new Double[firstElement.getRate().size()];
 			for (int i = 0; i < firstElement.getRate().size(); i++) {
 				double average = List.of(transposedArray[i]).stream().mapToDouble(it -> it).average().getAsDouble();
+				average = (double)Math.round(average*10)/10;
 				resultArray[i] = average;
 			}
 			log.info(Arrays.deepToString(transposedArray));
 			log.info(Arrays.toString(resultArray));
-
 			Evaluation evaluation = new Evaluation(firstElement.getCourseId(), firstElement.getCourseName(),
 					firstElement.getCourseTeacher(), firstElement.getCourseTeacherId(), firstElement.getCourseSemester(),
 					firstElement.getCourseYear());
